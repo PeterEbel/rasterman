@@ -20,8 +20,8 @@ bool Rasterizer::rasterize(const QImage& originalImage, double outputWidthMM, do
     int originalWidth = originalImage.width();
     int originalHeight = originalImage.height();
 
-    if(selectedWidthOriginal == 0) selectedWidthOriginal = originalWidth;
-    if(selectedHeightOriginal == 0) selectedHeightOriginal = originalHeight;
+    if (selectedWidthOriginal == 0) selectedWidthOriginal = originalWidth;
+    if (selectedHeightOriginal == 0) selectedHeightOriginal = originalHeight;
 
     int outputWidthPx = static_cast<int>(outputWidthMM / MM_PER_INCH * dpi);
     int outputHeightPx = static_cast<int>(outputHeightMM / MM_PER_INCH * dpi);
@@ -49,7 +49,7 @@ bool Rasterizer::rasterize(const QImage& originalImage, double outputWidthMM, do
             double brightness = color.lightnessF();
 
             // Helligkeit anpassen (Gamma-Korrektur)
-            brightness = adjustBrightness(brightness, 1.5); // Gamma-Wert anpassen
+            brightness = adjustBrightness(brightness, 3); // Gamma-Wert anpassen
 
             // Radius basierend auf dem Skalierungsmodus berechnen (angepasst)
             double radius = 0.0;
@@ -58,7 +58,7 @@ bool Rasterizer::rasterize(const QImage& originalImage, double outputWidthMM, do
                 radius = squareSizePx / 2.0 * coverageFactor;
                 break;
             case 1: // Linear (angepasst)
-                radius = std::clamp((1.0 - brightness) * squareSizePx * 0.75 * coverageFactor, 0.0, squareSizePx / 2.0 * coverageFactor); // Faktor 0.75 und clamp hinzugefügt
+                radius = std::clamp((1.0 - brightness) * squareSizePx * 2 * coverageFactor, 0.0, squareSizePx / 2.0 * coverageFactor); // Faktor 0.75 und clamp hinzugefügt
                 break;
             case 2: // Logarithmisch (angepasst)
                 if (brightness > 0.0) {
