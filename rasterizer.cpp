@@ -9,7 +9,7 @@
 Rasterizer::Rasterizer() {}
 Rasterizer::~Rasterizer() {}
 
-double adjustBrightness(double brightness, double gamma = 2.2) {
+double adjustBrightness(double brightness, double gamma = 1.0) {
     return std::pow(brightness, 1.0 / gamma);
 }
 
@@ -49,7 +49,7 @@ bool Rasterizer::rasterize(const QImage& originalImage, double outputWidthMM, do
             double brightness = color.lightnessF();
 
             // Helligkeit anpassen (Gamma-Korrektur)
-            brightness = adjustBrightness(brightness, 3); // Gamma-Wert anpassen
+            brightness = adjustBrightness(brightness, 0.5); // Gamma-Wert anpassen
 
             // Radius basierend auf dem Skalierungsmodus berechnen (angepasst)
             double radius = 0.0;
@@ -58,13 +58,13 @@ bool Rasterizer::rasterize(const QImage& originalImage, double outputWidthMM, do
                 radius = squareSizePx / 2.0 * coverageFactor;
                 break;
             case 1: // Linear (angepasst)
-                radius = std::clamp((1.0 - brightness) * squareSizePx * 2 * coverageFactor, 0.0, squareSizePx / 2.0 * coverageFactor); // Faktor 0.75 und clamp hinzugefügt
+                radius = std::clamp((1.0 - brightness) * squareSizePx * 0.75 * coverageFactor, 0.0, squareSizePx / 2.0 * coverageFactor); // Faktor 0.75 und clamp hinzugefügt
                 break;
             case 2: // Logarithmisch (angepasst)
                 if (brightness > 0.0) {
                     radius = std::clamp((1.0 - std::log(brightness * 9.0 + 1.0) / std::log(10.0)) * squareSizePx * 0.9 * coverageFactor, 0.0, squareSizePx / 2.0 * coverageFactor); // Faktor 0.9 und clamp hinzugefügt
                 } else {
-                    radius = squareSizePx/2 * coverageFactor;
+                    radius = squareSizePx / 2 * coverageFactor;
                 }
                 break;
             case 3: // Quadratwurzel (angepasst)
@@ -74,21 +74,20 @@ bool Rasterizer::rasterize(const QImage& originalImage, double outputWidthMM, do
                 radius = squareSizePx / 2.0 * coverageFactor;
                 break;
             }
-            if(radius < 0) radius = 0;
-            circles.append(QRectF(x * squareSizePx + (squareSizePx - 2 * radius)/2, y * squareSizePx + (squareSizePx - 2 * radius)/2, 2 * radius, 2 * radius));
+            if (radius < 0) radius = 0;
+            circles.append(QRectF(x * squareSizePx + (squareSizePx - 2 * radius) / 2, y * squareSizePx + (squareSizePx - 2 * radius) / 2, 2 * radius, 2 * radius));
             colors.append(color);
         }
     }
     return writeSvgToFile(outputFileName, outputWidthPx, outputHeightPx, circles, colors);
 }
 
-
 QColor Rasterizer::calculateAverageColor(const QImage& image, int x, int y, double width, double height) {
     int r = 0, g = 0, b = 0;
     int anzahlPixel = 0;
     for (int oy = y; oy < y + height && oy < image.height(); ++oy) {
         for (int ox = x; ox < x + width && ox < image.width(); ++ox) {
-            if(ox < 0 || oy < 0 || ox >= image.width() || oy >= image.height()) continue;
+            if (ox < 0 || oy < 0 || ox >= image.width() || oy >= image.height()) continue;
             QColor pixelFarbe = image.pixelColor(ox, oy);
             r += pixelFarbe.red();
             g += pixelFarbe.green();
