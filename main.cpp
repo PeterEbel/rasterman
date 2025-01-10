@@ -2,65 +2,90 @@
 #include <QApplication>
 #include <QImage>
 #include <QDebug>
+#include <QString>
+#include <QCoreApplication>
+#include <QCommandLineParser>
 
-int main(int argc, char *argv[])
-{
-    QApplication a(argc, argv);
+int main(int argc, char *argv[]) {
 
-    Rasterizer rasterizer;
-    QImage image("marius_color.jpg"); // Ersetze dies durch den Pfad zu deinem Bild
+    QCoreApplication a(argc, argv);
+    QCoreApplication::setApplicationName("Rasterman");
+    QCoreApplication::setApplicationVersion("1.0");
 
+    QCommandLineParser parser;
+    parser.setApplicationDescription("Erzeugt ein SVG-Rasterbild aus einem Bild.");
+    parser.addHelpOption();
+    parser.addVersionOption();
+
+    // Optionen definieren
+    QCommandLineOption scalingModeOption(QStringList() << "s" << "scaling", "Skalierungsmodus (0: Konstant, 1: Linear, 2: Logarithmisch, 3: Quadratwurzel).", "1");
+    parser.addOption(scalingModeOption);
+
+    QCommandLineOption grayscaleOption(QStringList() << "g" << "grayscale", "Erzeugt das SVG in Graustufen.");
+    parser.addOption(grayscaleOption);
+
+    QCommandLineOption maxCircleSizeOption(QStringList() << "m" << "maxcirclesize", "Maximale Kreisgröße in mm.", "4");
+    parser.addOption(maxCircleSizeOption);
+
+    QCommandLineOption coverageFactorOption(QStringList() << "f" << "coverage", "Abdeckungsfaktor der Kreise (0.0 bis 1.0).", "1.0");
+    parser.addOption(coverageFactorOption);
+
+    QCommandLineOption colorCalculationOption(QStringList() << "c" << "colorcalc", "FarbBerechnungsmethode (average oder median).", "average");
+    parser.addOption(colorCalculationOption);
+
+    QCommandLineOption gammaOption(QStringList() << "y" << "gamma", "Gamma-Wert für die Helligkeitsanpassung.", "0.5");
+    parser.addOption(gammaOption);
+
+    QCommandLineOption outputDpiOption(QStringList() << "d" << "dpi", "Dots per inch", "300");
+    parser.addOption(outputDpiOption);
+
+    QCommandLineOption outputWidthOption(QStringList() << "w" << "width", "Breite der SVG-Datei in mm.", "768");
+    parser.addOption(outputWidthOption);
+
+    QCommandLineOption outputHeightOption(QStringList() << "t" << "height", "Höhe der SVG-Datei in mm.", "1024");
+    parser.addOption(outputHeightOption);
+
+    QCommandLineOption outputFileNameOption(QStringList() << "o" << "output", "Name der Ausgabedatei.", "output.svg");
+    parser.addOption(outputFileNameOption);
+
+    // Bilddatei als Argument
+    parser.addPositionalArgument("input", "Eingabebilddatei.");
+
+    parser.process(a);
+
+    // Werte auslesen und überprüfen (mit Standardwerten)
+    bool useGrayscale = parser.isSet(grayscaleOption);
+    int scalingMode = parser.value(scalingModeOption).toInt();
+    double gamma = parser.value(gammaOption).toDouble();
+    double maxCircleSizeMM = parser.value(maxCircleSizeOption).toDouble();
+    QString colorCalculationMethod = parser.value(colorCalculationOption).toLower();
+    bool useMedian = (colorCalculationMethod == "median");
+    int outputDpi = parser.value(outputDpiOption).toInt();
+    double outputWidthMM = parser.value(outputWidthOption).toDouble();
+    double outputHeightMM = parser.value(outputHeightOption).toDouble();
+    QString outputFileName = parser.value(outputFileNameOption);
+    double coverageFactor = parser.value(coverageFactorOption).toDouble();
+
+    QStringList positionalArguments = parser.positionalArguments();
+    if (positionalArguments.isEmpty()) {
+        qDebug() << "Keine Eingabedatei angegeben.";
+        return 1;
+    }
+    QString inputFileName = positionalArguments.first();
+
+    // Bild laden
+    QImage image(inputFileName);
     if (image.isNull()) {
-        qDebug() << "Bild konnte nicht geladen werden!";
+        qDebug() << "Konnte Bilddatei nicht laden: " << inputFileName;
         return 1;
     }
 
-    // Beispiel 1a: Konstante Skalierung Durchschnitt
-    if (!rasterizer.rasterize(image, 768, 1024, 300, 2, 0, 0, image.width(), image.height(), "output_constant_average.svg", false, 0, 1.0)) {
-        qDebug() << "Rasterisierung fehlgeschlagen!";
-        return 1;
-    }
-
-    // Beispiel 1b: Konstante Skalierung Mittewert
-    if (!rasterizer.rasterize(image, 768, 1024, 300, 2, 0, 0, image.width(), image.height(), "output_constant_median.svg", true, 0, 1.0)) {
-        qDebug() << "Rasterisierung fehlgeschlagen!";
-        return 1;
-    }
-
-    // Beispiel 2a: Lineare Skalierung (Standardwert)
-    if (!rasterizer.rasterize(image, 768, 1024, 300, 2, 0, 0, image.width(), image.height(), "output_linear_average.svg", false, 1, 1.3)) {
-        qDebug() << "Rasterisierung fehlgeschlagen!";
-        return 1;
-    }
-
-    // Beispiel 2b: Lineare Skalierung (Standardwert)
-    if (!rasterizer.rasterize(image, 768, 1024, 300, 2, 0, 0, image.width(), image.height(), "output_linear_median.svg", true, 1, 1.3)) {
-        qDebug() << "Rasterisierung fehlgeschlagen!";
-        return 1;
-    }
-
-    // Beispiel 3a: Logarithmische Skalierung
-    if (!rasterizer.rasterize(image, 768, 1024, 300, 2, 0, 0, image.width(), image.height(), "output_logarithmic_average.svg", false, 2, 1.1)) {
-        qDebug() << "Rasterisierung fehlgeschlagen!";
-        return 1;
-    }
-
-    // Beispiel 3b: Logarithmische Skalierung
-    if (!rasterizer.rasterize(image, 768, 1024, 300, 2, 0, 0, image.width(), image.height(), "output_logarithmic_median.svg", true, 2, 1.1)) {
-        qDebug() << "Rasterisierung fehlgeschlagen!";
-        return 1;
-    }
-
-    // Beispiel 4a: Quadratwurzel-Skalierung
-    if (!rasterizer.rasterize(image, 768, 1024, 300, 2, 0, 0, image.width(), image.height(), "output_sqrt_average.svg", false, 3, 1.1)) {
-        qDebug() << "Rasterisierung fehlgeschlagen!";
-        return 1;
-    }
-
-    // Beispiel 4b: Quadratwurzel-Skalierung
-    if (!rasterizer.rasterize(image, 768, 1024, 300, 2, 0, 0, image.width(), image.height(), "output_sqrt_median.svg", true, 3, 1.1)) {
-        qDebug() << "Rasterisierung fehlgeschlagen!";
-        return 1;
+    // Rasterizer instanziieren und ausführen
+    Rasterizer rasterizer;
+    if (rasterizer.rasterize(image, outputWidthMM, outputHeightMM, outputDpi, scalingMode, 0, 0, outputWidthMM, outputHeightMM, outputFileName, useMedian, scalingMode, coverageFactor, useGrayscale, gamma, maxCircleSizeMM)) {
+        qDebug() << "SVG erfolgreich erstellt: " << outputFileName;
+    } else {
+        qDebug() << "Fehler beim Erstellen des SVGs.";
     }
 
     return 0;
