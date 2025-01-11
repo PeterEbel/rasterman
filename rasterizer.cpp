@@ -30,10 +30,8 @@ bool Rasterizer::rasterize(const QImage& originalImage,
     int outputWidthPx = static_cast<int>(outputWidthMM / MM_PER_INCH * dpi);
     int outputHeightPx = static_cast<int>(outputHeightMM / MM_PER_INCH * dpi);
     double squareSizePx = maxCircleSizeMM / MM_PER_INCH * dpi;
-
     double widthRatio = static_cast<double>(originalImage.width()) / outputWidthPx;
     double heightRatio = static_cast<double>(originalImage.height()) / outputHeightPx;
-
     double maxCircleSizePx = maxCircleSizeMM / MM_PER_INCH * dpi; //Max Kreisgröße in Pixel
 
     QVector<QRectF> circles;
@@ -89,6 +87,7 @@ bool Rasterizer::rasterize(const QImage& originalImage,
     return writeSvgToFile(outputFileName, outputWidthPx, outputHeightPx, circles, colors);}
 
 QColor Rasterizer::calculateAverageColor(const QImage& image, int x, int y, double width, double height, bool useGrayscale) {
+
     int r = 0, g = 0, b = 0;
     int anzahlPixel = 0;
     for (int oy = y; oy < y + height && oy < image.height(); ++oy) {
