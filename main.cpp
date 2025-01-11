@@ -13,32 +13,32 @@ int main(int argc, char *argv[]) {
     QCoreApplication::setApplicationVersion("1.0");
 
     QCommandLineParser parser;
-    parser.setApplicationDescription("Erzeugt ein SVG-Rasterbild aus einem Bild.");
+    parser.setApplicationDescription("Converts a bitmap file into a rasterized, scalable vector graphic.");
     parser.addHelpOption();
     parser.addVersionOption();
 
     // Optionen definieren
-    parser.addPositionalArgument("input", "Eingabebilddatei.");
+    parser.addPositionalArgument("input", "Input file");
 
-    QCommandLineOption outputFileNameOption(QStringList() << "o" << "output", "Name der Ausgabedatei.", "output.svg");
+    QCommandLineOption outputFileNameOption(QStringList() << "o" << "output", "Name of output file", "output.svg");
     parser.addOption(outputFileNameOption);
-    QCommandLineOption outputWidthOption(QStringList() << "w" << "width", "Breite der SVG-Datei in mm.", "768");
+    QCommandLineOption outputWidthOption(QStringList() << "w" << "width", "Output width in mm", "768");
     parser.addOption(outputWidthOption);
-    QCommandLineOption outputHeightOption(QStringList() << "t" << "height", "Höhe der SVG-Datei in mm.", "1024");
+    QCommandLineOption outputHeightOption(QStringList() << "t" << "height", "Output height in mm", "1024");
     parser.addOption(outputHeightOption);
-    QCommandLineOption maxCircleSizeOption(QStringList() << "m" << "maxcirclesize", "Maximale Kreisgröße in mm.", "4");
+    QCommandLineOption maxCircleSizeOption(QStringList() << "m" << "maxcirclesize", "Circle diameter in mm.", "4");
     parser.addOption(maxCircleSizeOption);
-    QCommandLineOption scalingModeOption(QStringList() << "s" << "scaling", "Skalierungsmodus (0: Konstant, 1: Linear, 2: Logarithmisch, 3: Quadratwurzel).", "1");
+    QCommandLineOption scalingModeOption(QStringList() << "s" << "scaling", "Scaling mode (0: Constant, 1: Linear, 2: Logarithmic, 3: Square root).", "1");
     parser.addOption(scalingModeOption);
-    QCommandLineOption colorCalculationOption(QStringList() << "c" << "colorcalc", "FarbBerechnungsmethode (average oder median).", "average");
+    QCommandLineOption colorCalculationOption(QStringList() << "c" << "colorcalc", "Color calculatio method (average or median).", "average");
     parser.addOption(colorCalculationOption);
     QCommandLineOption outputDpiOption(QStringList() << "d" << "dpi", "Dots per inch", "300");
     parser.addOption(outputDpiOption);
-    QCommandLineOption coverageFactorOption(QStringList() << "f" << "coverage", "Abdeckungsfaktor der Kreise (0.0 bis 2.0).", "1.0");
+    QCommandLineOption coverageFactorOption(QStringList() << "f" << "coverage", "Cornwer coverage factor (0.0 to 2.0).", "1.0");
     parser.addOption(coverageFactorOption);
-    QCommandLineOption grayscaleOption(QStringList() << "g" << "grayscale", "Konvertierung in Graustufen.");
+    QCommandLineOption grayscaleOption(QStringList() << "g" << "grayscale", "Convert colors to grayscale");
     parser.addOption(grayscaleOption);
-    QCommandLineOption gammaOption(QStringList() << "y" << "gamma", "Gamma-Wert für Helligkeitsanpassung.", "0.5");
+    QCommandLineOption gammaOption(QStringList() << "y" << "gamma", "Adapt luminance", "0.5");
     parser.addOption(gammaOption);
 
 
@@ -46,7 +46,7 @@ int main(int argc, char *argv[]) {
 
     QStringList positionalArguments = parser.positionalArguments();
     if (positionalArguments.isEmpty()) {
-        qDebug() << "Keine Eingabedatei angegeben.";
+        qDebug() << "Input file missing.";
         return 1;
     }
     QString inputFileName = positionalArguments.first();
@@ -65,16 +65,16 @@ int main(int argc, char *argv[]) {
     // Bild laden
     QImage image(inputFileName);
     if (image.isNull()) {
-        qDebug() << "Konnte Bilddatei nicht laden: " << inputFileName;
+        qDebug() << "Could load input file: " << inputFileName;
         return 1;
     }
 
-    // Rasterizer instanziieren und ausführen
+    // Instantiate and execute
     Rasterizer rasterizer;
     if (rasterizer.rasterize(image, outputFileName, 0, 0, outputWidthMM, outputHeightMM, maxCircleSizeMM, outputDpi, useMedian, scalingMode, coverageFactor, useGrayscale, gamma)) {
-        qDebug() << "SVG erfolgreich erstellt: " << outputFileName;
+        qDebug() << "SVG file successfully created: " << outputFileName;
     } else {
-        qDebug() << "Fehler beim Erstellen des SVGs.";
+        qDebug() << "Error creating SVG file.";
     }
 
     return 0;

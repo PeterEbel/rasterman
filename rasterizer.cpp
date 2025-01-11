@@ -32,7 +32,7 @@ bool Rasterizer::rasterize(const QImage& originalImage,
     double squareSizePx = maxCircleSizeMM / MM_PER_INCH * dpi;
     double widthRatio = static_cast<double>(originalImage.width()) / outputWidthPx;
     double heightRatio = static_cast<double>(originalImage.height()) / outputHeightPx;
-    double maxCircleSizePx = maxCircleSizeMM / MM_PER_INCH * dpi; //Max Kreisgröße in Pixel
+    double maxCircleSizePx = maxCircleSizeMM / MM_PER_INCH * dpi;
 
     QVector<QRectF> circles;
     QVector<QColor> colors;
@@ -49,29 +49,27 @@ bool Rasterizer::rasterize(const QImage& originalImage,
                 color = calculateAverageColor(originalImage, originalX, originalY, squareSizePx * widthRatio, squareSizePx * heightRatio, useGrayscale);
             }
 
-            // Helligkeit der Farbe (0.0 - 1.0)
+            // Measure and adapt brightness through gamma (0.0 - 1.0)
             double brightness = color.lightnessF();
+            brightness = adjustBrightness(brightness, gamma);
 
-            // Helligkeit anpassen (Gamma-Korrektur)
-            brightness = adjustBrightness(brightness, gamma); // Gamma-Wert anpassen
-
-            // Radius basierend auf dem Skalierungsmodus berechnen (angepasst)
+            // Calculate radius base on scaling mode
             double radius = 0.0;
             switch (scalingMode) {
-                case 0: // Konstant
+                case 0: // constant
                     radius = squareSizePx / 2.0 * coverageFactor;
                     break;
-                case 1: // Linear (angepasst)
+                case 1: // linear
                     radius = std::clamp((1.0 - brightness) * squareSizePx * 0.75 * coverageFactor, 0.0, std::min(squareSizePx / 2.0 * coverageFactor, maxCircleSizePx)); // Faktor 0.75 und clamp hinzugefügt
                     break;
-                case 2: // Logarithmisch (angepasst)
+                case 2: // logarithmic
                     if (brightness > 0.0) {
                         radius = std::clamp((1.0 - std::log(brightness * 9.0 + 1.0) / std::log(10.0)) * squareSizePx * 0.9 * coverageFactor, 0.0, std::min(squareSizePx / 2.0 * coverageFactor, maxCircleSizePx)); // Faktor 0.9 und clamp hinzugefügt
                     } else {
                         radius = std::min(squareSizePx / 2 * coverageFactor, maxCircleSizePx);
                     }
                     break;
-                case 3: // Quadratwurzel (angepasst)
+                case 3: // Square root
                     radius = std::clamp((1.0 - std::sqrt(brightness)) * squareSizePx * coverageFactor, 0.0, std::min(squareSizePx / 2.0 * coverageFactor, maxCircleSizePx)); // clamp hinzugefügt
                     break;
                 default:
@@ -89,26 +87,26 @@ bool Rasterizer::rasterize(const QImage& originalImage,
 QColor Rasterizer::calculateAverageColor(const QImage& image, int x, int y, double width, double height, bool useGrayscale) {
 
     int r = 0, g = 0, b = 0;
-    int anzahlPixel = 0;
+    int countPixel = 0;
     for (int oy = y; oy < y + height && oy < image.height(); ++oy) {
         for (int ox = x; ox < x + width && ox < image.width(); ++ox) {
             if (ox < 0 || oy < 0 || ox >= image.width() || oy >= image.height()) continue;
-            QColor pixelFarbe = image.pixelColor(ox, oy);
+            QColor pixelColor = image.pixelColor(ox, oy);
             if (useGrayscale) {
-                int gray = (int)(0.299 * pixelFarbe.red() + 0.587 * pixelFarbe.green() + 0.114 * pixelFarbe.blue());
+                int gray = (int)(0.299 * pixelColor.red() + 0.587 * pixelColor.green() + 0.114 * pixelColor.blue());
                 QColor grayColor(gray, gray, gray);
-                pixelFarbe = grayColor;
+                pixelColor = grayColor;
             }
-            r += pixelFarbe.red();
-            g += pixelFarbe.green();
-            b += pixelFarbe.blue();
-            anzahlPixel++;
+            r += pixelColor.red();
+            g += pixelColor.green();
+            b += pixelColor.blue();
+            countPixel++;
         }
     }
-    if (anzahlPixel > 0) {
-        return QColor(r / anzahlPixel, g / anzahlPixel, b / anzahlPixel);
+    if (countPixel > 0) {
+        return QColor(r / countPixel, g / countPixel, b / countPixel);
     }
-    return Qt::white; // Standardfarbe, falls keine Pixel gefunden wurden
+    return Qt::white; // Default color in case no pixel found
 }
 
     QColor Rasterizer::calculateMedianColor(const QImage& image, int x, int y, double width, double height, bool useGrayscale) {
@@ -120,20 +118,20 @@ QColor Rasterizer::calculateAverageColor(const QImage& image, int x, int y, doub
         for (int oy = y; oy < y + height && oy < image.height(); ++oy) {
             for (int ox = x; ox < x + width && ox < image.width(); ++ox) {
                 if (ox < 0 || oy < 0 || ox >= image.width() || oy >= image.height()) continue;
-                QColor pixelFarbe = image.pixelColor(ox, oy);
+                QColor pixelColor = image.pixelColor(ox, oy);
                 if (useGrayscale) {
-                    int gray = (int)(0.299 * pixelFarbe.red() + 0.587 * pixelFarbe.green() + 0.114 * pixelFarbe.blue());
+                    int gray = (int)(0.299 * pixelColor.red() + 0.587 * pixelColor.green() + 0.114 * pixelColor.blue());
                     QColor grayColor(gray, gray, gray);
-                    pixelFarbe = grayColor;
+                    pixelColor = grayColor;
                 }
-                redValues.append(pixelFarbe.red());
-                greenValues.append(pixelFarbe.green());
-                blueValues.append(pixelFarbe.blue());
+                redValues.append(pixelColor.red());
+                greenValues.append(pixelColor.green());
+                blueValues.append(pixelColor.blue());
             }
         }
 
         if (redValues.isEmpty()) {
-            return Qt::white; // Standardfarbe, falls keine Pixel gefunden wurden
+            return Qt::white; // Default color in case no pixel found
         }
 
         std::sort(redValues.begin(), redValues.end());
@@ -151,9 +149,8 @@ bool Rasterizer::writeSvgToFile(const QString& fileName, int widthPx, int height
 
     QFile file(fileName);
     if (file.open(QIODevice::WriteOnly | QIODevice::Text)) {
-        QTextStream stream(&file);
 
-        // Korrigierte Kodierungseinstellung:
+        QTextStream stream(&file);
         stream.setEncoding(QStringConverter::Utf8);
 
         stream << "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n";
@@ -172,7 +169,7 @@ bool Rasterizer::writeSvgToFile(const QString& fileName, int widthPx, int height
         file.close();
         return true;
     } else {
-        qDebug() << "Konnte Datei nicht öffnen: " << fileName;
+        qDebug() << "Error opening file: " << fileName;
         return false;
     }
 }
