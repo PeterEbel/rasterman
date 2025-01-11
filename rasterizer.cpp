@@ -13,22 +13,26 @@ double adjustBrightness(double brightness, double gamma = 1.0) {
     return std::pow(brightness, 1.0 / gamma);
 }
 
-bool Rasterizer::rasterize(const QImage& originalImage, double outputWidthMM, double outputHeightMM, int dpi, double rasterSizeMM,
-                           int xStartOriginal, int yStartOriginal, int selectedWidthOriginal, int selectedHeightOriginal,
-                           const QString& outputFileName, bool useMedian, int scalingMode, double coverageFactor, bool useGrayscale, double gamma, double maxCircleSizeMM) {
-
-    int originalWidth = originalImage.width();
-    int originalHeight = originalImage.height();
-
-    if (selectedWidthOriginal == 0) selectedWidthOriginal = originalWidth;
-    if (selectedHeightOriginal == 0) selectedHeightOriginal = originalHeight;
+bool Rasterizer::rasterize(const QImage& originalImage,
+                           const QString& outputFileName,
+                           int xStartOriginal,
+                           int yStartOriginal,
+                           double outputWidthMM,
+                           double outputHeightMM,
+                           double maxCircleSizeMM,
+                           int dpi,
+                           bool useMedian,
+                           int scalingMode,
+                           double coverageFactor,
+                           bool useGrayscale,
+                           double gamma) {
 
     int outputWidthPx = static_cast<int>(outputWidthMM / MM_PER_INCH * dpi);
     int outputHeightPx = static_cast<int>(outputHeightMM / MM_PER_INCH * dpi);
-    double squareSizePx = rasterSizeMM / MM_PER_INCH * dpi;
+    double squareSizePx = maxCircleSizeMM / MM_PER_INCH * dpi;
 
-    double widthRatio = static_cast<double>(selectedWidthOriginal) / outputWidthPx;
-    double heightRatio = static_cast<double>(selectedHeightOriginal) / outputHeightPx;
+    double widthRatio = static_cast<double>(originalImage.width()) / outputWidthPx;
+    double heightRatio = static_cast<double>(originalImage.height()) / outputHeightPx;
 
     double maxCircleSizePx = maxCircleSizeMM / MM_PER_INCH * dpi; //Max Kreisgröße in Pixel
 

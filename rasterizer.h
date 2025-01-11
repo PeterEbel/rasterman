@@ -14,21 +14,18 @@ public:
     ~Rasterizer();
 
     bool rasterize(const QImage& originalImage,
-                               double outputWidthMM,
-                               double outputHeightMM,
-                               int dpi,
-                               double rasterSizeMM,
-                               int xStartOriginal,
-                               int yStartOriginal,
-                               int selectedWidthOriginal,
-                               int selectedHeightOriginal,
-                               const QString& outputFileName,
-                               bool useMedian,
-                               int scalingMode,
-                               double coverageFactor,
-                               bool useGrayscale,
-                               double gamma,
-                               double maxCircleSizeMM);
+                               const QString& outputFileName = "output.svg",
+                               int xStartOriginal = 0,
+                               int yStartOriginal = 0,
+                               double outputWidthMM = 512.0,
+                               double outputHeightMM = 1024.0,
+                               double maxCircleSizeMM = 10.0,
+                               int dpi = 100,
+                               bool useMedian = false,
+                               int scalingMode = 1,
+                               double coverageFactor = 1.0,
+                               bool useGrayscale = false,
+                               double gamma = 0.5);
 
 private:
     // Private Methoden
