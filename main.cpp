@@ -75,10 +75,10 @@ int main(int argc, char *argv[]) {
     bool useGrayscale = parser.isSet(grayscaleOption);
     double gamma = parser.value(gammaOption).toDouble();
 
-    // Bild laden
+    // Load image
     QImage image(inputFileName);
     if (image.isNull()) {
-        qDebug() << "Could load input file: " << inputFileName;
+        qDebug() << "Couldn't load input file: " << inputFileName;
         return 1;
     }
 

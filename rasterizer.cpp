@@ -69,7 +69,7 @@ bool Rasterizer::rasterize(const QImage& originalImage,
                         radius = std::min(squareSizePx / 2 * coverageFactor, maxCircleSizePx);
                     }
                     break;
-                case 3: // Square root
+                case 3: // square root
                     radius = std::clamp((1.0 - std::sqrt(brightness)) * squareSizePx * coverageFactor, 0.0, std::min(squareSizePx / 2.0 * coverageFactor, maxCircleSizePx)); // clamp hinzugefügt
                     break;
                 default:
