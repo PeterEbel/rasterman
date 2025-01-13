@@ -17,3 +17,6 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 HEADERS += \
     rasterizer.h
+
+DISTFILES += \
+    README.md
