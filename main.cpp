@@ -54,7 +54,6 @@ int main(int argc, char *argv[]) {
     QCommandLineOption gammaOption(QStringList() << "y" << "gamma", "Adapt luminance", "0.5");
     parser.addOption(gammaOption);
 
-
     parser.process(a);
 
     QStringList positionalArguments = parser.positionalArguments();

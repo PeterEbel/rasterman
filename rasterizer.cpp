@@ -10,6 +10,10 @@ Rasterizer::Rasterizer() {}
 Rasterizer::~Rasterizer() {}
 
 double adjustBrightness(double brightness, double gamma = 1.0) {
+    if (gamma == 0.0) {
+        qDebug() << "Error: Gamma-value must not be 0. Using default 1.0 instead.";
+        gamma = 1.0;
+    }
     return std::pow(brightness, 1.0 / gamma);
 }
 
@@ -82,7 +86,8 @@ bool Rasterizer::rasterize(const QImage& originalImage,
             colors.append(color);
         }
     }
-    return writeSvgToFile(outputFileName, outputWidthPx, outputHeightPx, circles, colors);}
+    return writeSvgToFile(outputFileName, outputWidthPx, outputHeightPx, circles, colors);
+}
 
 QColor Rasterizer::calculateAverageColor(const QImage& image, int x, int y, double width, double height, bool useGrayscale) {
 
@@ -109,41 +114,41 @@ QColor Rasterizer::calculateAverageColor(const QImage& image, int x, int y, doub
     return Qt::white; // Default color in case no pixel found
 }
 
-    QColor Rasterizer::calculateMedianColor(const QImage& image, int x, int y, double width, double height, bool useGrayscale) {
+QColor Rasterizer::calculateMedianColor(const QImage& image, int x, int y, double width, double height, bool useGrayscale) {
 
-        QVector<int> redValues;
-        QVector<int> greenValues;
-        QVector<int> blueValues;
+    QVector<int> redValues;
+    QVector<int> greenValues;
+    QVector<int> blueValues;
 
-        for (int oy = y; oy < y + height && oy < image.height(); ++oy) {
-            for (int ox = x; ox < x + width && ox < image.width(); ++ox) {
-                if (ox < 0 || oy < 0 || ox >= image.width() || oy >= image.height()) continue;
-                QColor pixelColor = image.pixelColor(ox, oy);
-                if (useGrayscale) {
-                    int gray = (int)(0.299 * pixelColor.red() + 0.587 * pixelColor.green() + 0.114 * pixelColor.blue());
-                    QColor grayColor(gray, gray, gray);
-                    pixelColor = grayColor;
-                }
-                redValues.append(pixelColor.red());
-                greenValues.append(pixelColor.green());
-                blueValues.append(pixelColor.blue());
+    for (int oy = y; oy < y + height && oy < image.height(); ++oy) {
+        for (int ox = x; ox < x + width && ox < image.width(); ++ox) {
+            if (ox < 0 || oy < 0 || ox >= image.width() || oy >= image.height()) continue;
+            QColor pixelColor = image.pixelColor(ox, oy);
+            if (useGrayscale) {
+                int gray = (int)(0.299 * pixelColor.red() + 0.587 * pixelColor.green() + 0.114 * pixelColor.blue());
+                QColor grayColor(gray, gray, gray);
+                pixelColor = grayColor;
             }
+            redValues.append(pixelColor.red());
+            greenValues.append(pixelColor.green());
+            blueValues.append(pixelColor.blue());
         }
-
-        if (redValues.isEmpty()) {
-            return Qt::white; // Default color in case no pixel found
-        }
-
-        std::sort(redValues.begin(), redValues.end());
-        std::sort(greenValues.begin(), greenValues.end());
-        std::sort(blueValues.begin(), blueValues.end());
-
-        int medianRed = redValues[redValues.size() / 2];
-        int medianGreen = greenValues[greenValues.size() / 2];
-        int medianBlue = blueValues[blueValues.size() / 2];
-
-        return QColor(medianRed, medianGreen, medianBlue);
     }
+
+    if (redValues.isEmpty()) {
+        return Qt::white; // Default color in case no pixel found
+    }
+
+    std::sort(redValues.begin(), redValues.end());
+    std::sort(greenValues.begin(), greenValues.end());
+    std::sort(blueValues.begin(), blueValues.end());
+
+    int medianRed = redValues[redValues.size() / 2];
+    int medianGreen = greenValues[greenValues.size() / 2];
+    int medianBlue = blueValues[blueValues.size() / 2];
+
+    return QColor(medianRed, medianGreen, medianBlue);
+}
 
 bool Rasterizer::writeSvgToFile(const QString& fileName, int widthPx, int heightPx, const QVector<QRectF>& circles, const QVector<QColor>& colors)  {
 
