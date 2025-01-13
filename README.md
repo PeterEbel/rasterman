@@ -1,6 +1,3 @@
 # Rasterman
 
-Rasterman is a software to enlarge bitmaps by converting them into rasterized scalable vector graphics to be used as large posters.
-It is inspired by [The Rasterbator](https://rasterbator.net/) that has been implemented by Matias Ärje in 2004.
-Rasterbator is implemented in C# and comes with a GUI. Rasterman is programmen in C++ using the Qt 6.8.1 framework.
-Currently it is a console application running in Linux.
+Rasterman is a small application to enlarge bitmaps by converting them into rasterized scalable vector graphics to be used as posters. The software is heavily inspired by [The Rasterbator](https://rasterbator.net/), a similar application created by Matias Ärje in 2004. Whereas Rasterbator's standalone version is implemented in C# and comes with a GUI Rasterman is programmen in C++ using the Qt 6.8.1 framework and is a console application only. The reason behind the development of Rasterman is Qt. I wanted to learn the framework and was looking for something interesting to develop.
