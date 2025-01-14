@@ -29,6 +29,7 @@ bool Rasterizer::rasterize(const QImage& originalImage,
                            int scalingMode,
                            double coverageFactor,
                            bool useGrayscale,
+                           bool useBlackCircles,
                            double gamma) {
 
     int outputWidthPx = static_cast<int>(outputWidthMM / MM_PER_INCH * dpi);
@@ -81,9 +82,13 @@ bool Rasterizer::rasterize(const QImage& originalImage,
                     break;
             }
 
+            // Add circles and colors to their respective vectors
             if (radius < 0) radius = 0;
             circles.append(QRectF(x * squareSizePx + (squareSizePx - 2 * radius) / 2, y * squareSizePx + (squareSizePx - 2 * radius) / 2, 2 * radius, 2 * radius));
-            colors.append(color);
+            if (useBlackCircles == true) {
+                color = Qt::black;
+            }
+             colors.append(color);
         }
     }
     return writeSvgToFile(outputFileName, outputWidthPx, outputHeightPx, circles, colors);

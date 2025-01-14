@@ -25,33 +25,34 @@ int main(int argc, char *argv[]) {
     QCoreApplication::setApplicationName("Rasterman");
     QCoreApplication::setApplicationVersion("1.0");
 
+    // Main task is command line parsing stuff
     QCommandLineParser parser;
     parser.setApplicationDescription("Converts a bitmap file into a rasterized, scalable vector graphic.");
     parser.addHelpOption();
     parser.addVersionOption();
 
-    // Optionen definieren
     parser.addPositionalArgument("input", "Input file");
-
     QCommandLineOption outputFileNameOption(QStringList() << "o" << "output", "Name of output file", "output.svg");
     parser.addOption(outputFileNameOption);
     QCommandLineOption outputWidthOption(QStringList() << "w" << "width", "Output width in mm", "768");
     parser.addOption(outputWidthOption);
     QCommandLineOption outputHeightOption(QStringList() << "t" << "height", "Output height in mm", "1024");
     parser.addOption(outputHeightOption);
-    QCommandLineOption maxCircleSizeOption(QStringList() << "m" << "maxcirclesize", "Circle diameter in mm.", "4");
+    QCommandLineOption maxCircleSizeOption(QStringList() << "m" << "maxcirclesize", "Circle diameter in mm", "4");
     parser.addOption(maxCircleSizeOption);
-    QCommandLineOption scalingModeOption(QStringList() << "s" << "scaling", "Scaling mode (0: Constant, 1: Linear, 2: Logarithmic, 3: Square root).", "1");
+    QCommandLineOption scalingModeOption(QStringList() << "s" << "scaling", "Scaling mode (0: Constant, 1: Linear, 2: Logarithmic, 3: Square root)", "1");
     parser.addOption(scalingModeOption);
-    QCommandLineOption colorCalculationOption(QStringList() << "c" << "colorcalc", "Color calculatio method (average or median).", "average");
+    QCommandLineOption colorCalculationOption(QStringList() << "c" << "colorcalc", "Color calculatio method (average or median)", "average");
     parser.addOption(colorCalculationOption);
     QCommandLineOption outputDpiOption(QStringList() << "d" << "dpi", "Dots per inch", "300");
     parser.addOption(outputDpiOption);
-    QCommandLineOption coverageFactorOption(QStringList() << "f" << "coverage", "Cornwer coverage factor (0.0 to 2.0).", "1.0");
+    QCommandLineOption coverageFactorOption(QStringList() << "f" << "coverage", "Corner coverage/overlapping factor (0.0 to 2.0)", "1.0");
     parser.addOption(coverageFactorOption);
-    QCommandLineOption grayscaleOption(QStringList() << "g" << "grayscale", "Convert colors to grayscale");
+    QCommandLineOption grayscaleOption(QStringList() << "g" << "grayscale", "Convert to grayscale");
     parser.addOption(grayscaleOption);
-    QCommandLineOption gammaOption(QStringList() << "y" << "gamma", "Adapt luminance", "0.5");
+    QCommandLineOption blackCirclesOption(QStringList() << "b" << "black", "Use black circles only");
+    parser.addOption(blackCirclesOption);
+    QCommandLineOption gammaOption(QStringList() << "y" << "gamma", "Adapt brigthness", "0.5");
     parser.addOption(gammaOption);
 
     parser.process(a);
@@ -72,6 +73,7 @@ int main(int argc, char *argv[]) {
     int outputDpi = parser.value(outputDpiOption).toInt();
     double coverageFactor = parser.value(coverageFactorOption).toDouble();
     bool useGrayscale = parser.isSet(grayscaleOption);
+    bool useBlackCircles = parser.isSet(blackCirclesOption);
     double gamma = parser.value(gammaOption).toDouble();
 
     // Load image
@@ -83,7 +85,7 @@ int main(int argc, char *argv[]) {
 
     // Instantiate and execute
     Rasterizer rasterizer;
-    if (rasterizer.rasterize(image, outputFileName, 0, 0, outputWidthMM, outputHeightMM, maxCircleSizeMM, outputDpi, useMedian, scalingMode, coverageFactor, useGrayscale, gamma)) {
+    if (rasterizer.rasterize(image, outputFileName, 0, 0, outputWidthMM, outputHeightMM, maxCircleSizeMM, outputDpi, useMedian, scalingMode, coverageFactor, useGrayscale, useBlackCircles, gamma)) {
         qDebug() << "SVG file successfully created: " << outputFileName;
     } else {
         qDebug() << "Error creating SVG file.";

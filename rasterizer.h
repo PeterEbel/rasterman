@@ -25,6 +25,7 @@ public:
                                int scalingMode = 1,
                                double coverageFactor = 1.0,
                                bool useGrayscale = false,
+                               bool useBlackCircles = false,
                                double gamma = 0.5);
 
 private:
