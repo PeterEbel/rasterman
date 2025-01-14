@@ -11,17 +11,20 @@ Options:
   -h, --help                 Displays help on commandline options.
   --help-all                 Displays help, including generic Qt options.
   -v, --version              Displays version information.
-  -o, --output <output.svg>  Name of output file.
-  -w, --width <768>          Output width in mm.
-  -t, --height <1024>        Output height in mm.
-  -m, --maxcirclesize <4>    Circle diameter in mm.
-  -s, --scaling <1>          Scaling mode (0: Constant, 1: Linear, 2: Logarithmic, 3: Square root).
-  -c, --colorcalc <average>  Color calculation method (average or median).
-  -d, --dpi <300>            Dots per inch.
-  -f, --coverage <1.0>       Corner coverage factor (0.0 to 2.0).
-  -g, --grayscale            Convert colors to grayscale.
-  -y, --gamma <0.5>          Adapt luminance.
+  -o, --output <output.svg>  Name of output file
+  -w, --width <768>          Output width in mm
+  -t, --height <1024>        Output height in mm
+  -m, --maxcirclesize <4>    Circle diameter in mm
+  -s, --scaling <1>          Scaling mode (0: Constant, 1: Linear, 2:
+                             Logarithmic, 3: Square root)
+  -c, --colorcalc <average>  Color calculatio method (average or median)
+  -d, --dpi <300>            Dots per inch
+  -f, --coverage <1.0>       Corner coverage/overlapping factor (0.0 to 2.0)
+  -g, --grayscale            Convert to grayscale
+  -b, --black                Use black circles only
+  -y, --gamma <0.5>          Adapt brigthness
 
 Arguments:
   input                      Input file
+
 ```
