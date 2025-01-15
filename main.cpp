@@ -42,7 +42,7 @@ int main(int argc, char *argv[]) {
     parser.addOption(maxCircleSizeOption);
     QCommandLineOption scalingModeOption(QStringList() << "s" << "scaling", "Scaling mode (0: Constant, 1: Linear, 2: Logarithmic, 3: Square root)", "1");
     parser.addOption(scalingModeOption);
-    QCommandLineOption colorCalculationOption(QStringList() << "c" << "colorcalc", "Color calculatio method (average or median)", "average");
+    QCommandLineOption colorCalculationOption(QStringList() << "c" << "colorcalc", "Color calculation method (average or median)", "average");
     parser.addOption(colorCalculationOption);
     QCommandLineOption outputDpiOption(QStringList() << "d" << "dpi", "Dots per inch", "300");
     parser.addOption(outputDpiOption);
