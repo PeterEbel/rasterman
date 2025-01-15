@@ -58,7 +58,7 @@ bool Rasterizer::rasterize(const QImage& originalImage,
             double brightness = color.lightnessF();
             brightness = adjustBrightness(brightness, gamma);
 
-            // Calculate radius base on scaling mode
+            // Calculate radius based on scaling mode
             double radius = 0.0;
             switch (scalingMode) {
                 case 0: // constant
