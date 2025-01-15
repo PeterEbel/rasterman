@@ -2,13 +2,15 @@
  * Program:     rasterman
  * Description: Converts bitmap images into scalable rasterized vector graphics
  * Author:      Peter Ebel, peter.ebel@outlook.de
- * Date:        2025-01-12
+ * Date:        2025-01-15
  * Uses:        Qt 6.8.1
- * Execution:   ./rasterman input-file -h <help>
- *              ./rasterman input-file -s <scaling mode>
+ * Execution:   ./rasterman input-file [options]
+ *              ./rasterman -h
  * Change History
  * Version    By         Date         Change
- * 1.0        Ebel       20025-01-12  initial version
+ * 1.0        Ebel       2025-01-12   initial version
+ * 1.0        Ebel       2025-01-13   black circles added
+ * 1.0        Ebel       2025-01-14   documentation
  ****************************************************************************************/
 
 #include "rasterizer.h"
