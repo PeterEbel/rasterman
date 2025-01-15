@@ -29,7 +29,6 @@ public:
                                double gamma = 0.5);
 
 private:
-    // Private Methoden
     QColor calculateAverageColor(const QImage& image, int x, int y, double width, double height, bool useGrayscale);
     QColor calculateMedianColor(const QImage& image, int x, int y, double width, double height, bool useGrayscale);
     bool writeSvgToFile(const QString& fileName, int widthPx, int heightPx, const QVector<QRectF>& circles, const QVector<QColor>& colors);
