@@ -23,6 +23,7 @@
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    centerWindow();
     connect(ui->sbDpi, QOverload<int>::of(&QSpinBox::valueChanged), this, &MainWindow::updatePreview);
     connect(ui->gammaDoubleSpinBox, QOverload<double>::of(&QDoubleSpinBox::valueChanged), this, &MainWindow::onGammaChanged); //Neue Verbindung
     connect(ui->coverageDoubleSpinBox, QOverload<double>::of(&QDoubleSpinBox::valueChanged), this, &MainWindow::updatePreview);
@@ -38,9 +39,26 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+void MainWindow::centerWindow()
+{
+    // Obtain screen geometry
+    QScreen *screen = QGuiApplication::primaryScreen();
+    QRect screenGeometry = screen->geometry();
+
+    // Obtain window geometry
+    QRect windowGeometry = this->frameGeometry();
+
+    // Calculate window position
+    int x = (screenGeometry.width() - windowGeometry.width()) / 2;
+    int y = (screenGeometry.height() - windowGeometry.height()) / 2;
+
+    // move window
+    this->move(x, y);
+}
+
 void MainWindow::on_selectImageButton_clicked()
 {
-    QString fileName = QFileDialog::getOpenFileName(this, "Bild auswählen", "", "Bilder (*.png *.jpg *.jpeg *.bmp)");
+    QString fileName = QFileDialog::getOpenFileName(this, "Select image", "", "Images (*.png *.jpg *.jpeg *.bmp)");
     if (!fileName.isEmpty()) {
         ui->imagePathLineEdit->setText(fileName);
         // set output filename
@@ -51,7 +69,7 @@ void MainWindow::on_selectImageButton_clicked()
 
 void MainWindow::on_saveSvgButton_clicked()
 {
-    QString fileName = QFileDialog::getSaveFileName(this, "SVG speichern", ui->outputFilenameLineEdit->text(), "SVG (*.svg)");
+    QString fileName = QFileDialog::getSaveFileName(this, "Store SVG", ui->outputFilenameLineEdit->text(), "SVG (*.svg)");
     if (!fileName.isEmpty()) {
         ui->outputFilenameLineEdit->setText(fileName);
         outputFilename = fileName;

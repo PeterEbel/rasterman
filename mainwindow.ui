@@ -75,10 +75,13 @@
        <item row="4" column="1">
         <widget class="QDoubleSpinBox" name="outputWidthDoubleSpinBox">
          <property name="maximum">
-          <double>20000.000000000000000</double>
+          <double>3000.000000000000000</double>
+         </property>
+         <property name="singleStep">
+          <double>100.000000000000000</double>
          </property>
          <property name="value">
-          <double>99.989999999999995</double>
+          <double>100.000000000000000</double>
          </property>
         </widget>
        </item>
@@ -92,10 +95,13 @@
        <item row="5" column="1">
         <widget class="QDoubleSpinBox" name="outputHeightDoubleSpinBox">
          <property name="maximum">
-          <double>20000.000000000000000</double>
+          <double>3000.000000000000000</double>
+         </property>
+         <property name="singleStep">
+          <double>100.000000000000000</double>
          </property>
          <property name="value">
-          <double>99.989999999999995</double>
+          <double>200.000000000000000</double>
          </property>
         </widget>
        </item>

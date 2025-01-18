@@ -41,5 +41,6 @@ private:
     Ui::MainWindow *ui;
     Rasterizer rasterizer;
     QString outputFilename;
+    void centerWindow();
 };
 #endif // MAINWINDOW_H
