@@ -19,12 +19,12 @@
 #include <algorithm>
 #include <cmath>
 
-Rasterizer::Rasterizer() {}
+Rasterizer::Rasterizer(QObject *parent) : QObject(parent) {}
 Rasterizer::~Rasterizer() {}
 
-double adjustBrightness(double brightness, double gamma = 1.0) {
-    if (gamma == 0.0) {
-        qDebug() << "Error: Gamma-value must not be 0. Using default 1.0 instead.";
+double adjustBrightness(double brightness, double gamma) {
+    if (gamma <= 0.0) {
+        qDebug() << "Error: Gamma has to be positiv. Using default value 1.0.";
         gamma = 1.0;
     }
     return std::pow(brightness, 1.0 / gamma);
@@ -42,8 +42,7 @@ bool Rasterizer::rasterize(const QImage& originalImage,
                            int scalingMode,
                            double coverageFactor,
                            bool useGrayscale,
-                           bool useBlackCircles,
-                           double gamma) {
+                           bool useBlackCircles) {
 
     int outputWidthPx = static_cast<int>(outputWidthMM / MM_PER_INCH * dpi);
     int outputHeightPx = static_cast<int>(outputHeightMM / MM_PER_INCH * dpi);
@@ -69,8 +68,7 @@ bool Rasterizer::rasterize(const QImage& originalImage,
 
             // Measure and adapt brightness through gamma (0.0 - 1.0)
             double brightness = color.lightnessF();
-            brightness = adjustBrightness(brightness, gamma);
-
+            brightness = adjustBrightness(brightness, this->gamma()); //use gamma from class
             // Calculate radius based on scaling mode
             double radius = 0.0;
             switch (scalingMode) {

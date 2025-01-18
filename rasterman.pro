@@ -1,6 +1,6 @@
-QT = core gui widgets
+QT = core gui widgets concurrent svgwidgets
 
-CONFIG += c++17 cmdline
+CONFIG += c++17
 
 # You can make your code fail to compile if it uses deprecated APIs.
 # In order to do so, uncomment the following line.
@@ -8,6 +8,7 @@ CONFIG += c++17 cmdline
 
 SOURCES += \
         main.cpp \
+        mainwindow.cpp \
         rasterizer.cpp
 
 # Default rules for deployment.
@@ -16,7 +17,11 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 HEADERS += \
+    mainwindow.h \
     rasterizer.h
 
 DISTFILES += \
     README.md
+
+FORMS += \
+    mainwindow.ui
