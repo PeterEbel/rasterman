@@ -41,6 +41,7 @@ bool Rasterizer::rasterize(const QImage& originalImage,
                            bool useMedian,
                            int scalingMode,
                            double coverageFactor,
+                           double gamma,
                            bool useGrayscale,
                            bool useBlackCircles) {
 
@@ -68,7 +69,7 @@ bool Rasterizer::rasterize(const QImage& originalImage,
 
             // Measure and adapt brightness through gamma (0.0 - 1.0)
             double brightness = color.lightnessF();
-            brightness = adjustBrightness(brightness, this->gamma()); //use gamma from class
+            brightness = adjustBrightness(brightness, gamma); //use gamma from class
             // Calculate radius based on scaling mode
             double radius = 0.0;
             switch (scalingMode) {

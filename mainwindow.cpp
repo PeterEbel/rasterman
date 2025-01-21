@@ -25,7 +25,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     ui->setupUi(this);
     centerWindow();
     connect(ui->spbDpi, QOverload<int>::of(&QSpinBox::valueChanged), this, &MainWindow::promoteChanges);
-    connect(ui->spbGamma, QOverload<double>::of(&QDoubleSpinBox::valueChanged), this, &MainWindow::promoteChanges); //Neue Verbindung
+    connect(ui->spbGamma, QOverload<double>::of(&QDoubleSpinBox::valueChanged), this, &MainWindow::promoteChanges);
     connect(ui->spbCoverage, QOverload<double>::of(&QDoubleSpinBox::valueChanged), this, &MainWindow::promoteChanges);
     connect(ui->spbCircleSize, QOverload<double>::of(&QDoubleSpinBox::valueChanged), this, &MainWindow::promoteChanges);
     connect(ui->cobScalingMode, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &MainWindow::promoteChanges);
@@ -108,16 +108,16 @@ void MainWindow::on_btnRasterize_clicked()
     bool useMedian = ui->cobColorCalcMethod->currentIndex() == 1;
     int scalingMode = ui->cobScalingMode->currentIndex();
     double coverageFactor = ui->spbCoverage->value();
+    double gamma = ui->spbGamma->value();
     bool useGrayscale = ui->chbGrayscale->isChecked();
     bool useBlackCircles = ui->chbBlackCircles->isChecked();
-    // double gamma = ui->spbGamma->value();
 
     ui->txeStatus->appendPlainText("Rasterization started...");
 
     QElapsedTimer timer;
     timer.start();
 
-    bool success = rasterizer.rasterize(image, outputFilename, 0, 0, outputWidthMM, outputHeightMM, maxCircleSizeMM, dpi, useMedian, scalingMode, coverageFactor, useGrayscale, useBlackCircles);
+    bool success = rasterizer.rasterize(image, outputFilename, 0, 0, outputWidthMM, outputHeightMM, maxCircleSizeMM, dpi, useMedian, scalingMode, coverageFactor, gamma, useGrayscale, useBlackCircles);
 
     if (success) {
         ui->txeStatus->appendPlainText("Rasterization finished!");
@@ -129,8 +129,8 @@ void MainWindow::on_btnRasterize_clicked()
     int elapsedMs = timer.elapsed();
     ui->txeStatus->appendPlainText(QString("Zeit: %1 ms").arg(elapsedMs));
 
-    // QtConcurrent::run([this, image, outputFilename, outputWidthMM, outputHeightMM, maxCircleSizeMM, dpi, useMedian, scalingMode, coverageFactor, useGrayscale, useBlackCircles]() {
-    //     bool success = rasterizer.rasterize(image, outputFilename, 0, 0, outputWidthMM, outputHeightMM, maxCircleSizeMM, dpi, useMedian, scalingMode, coverageFactor, useGrayscale, useBlackCircles);
+    // QtConcurrent::run([this, image, outputFilename, outputWidthMM, outputHeightMM, maxCircleSizeMM, dpi, useMedian, scalingMode, coverageFactor, gamma, useGrayscale, useBlackCircles]() {
+    //     bool success = rasterizer.rasterize(image, outputFilename, 0, 0, outputWidthMM, outputHeightMM, maxCircleSizeMM, dpi, useMedian, scalingMode, coverageFactor, gamma, useGrayscale, useBlackCircles);
     //     QMetaObject::invokeMethod(this, [this, success]() {
     //         onRasterizationFinished(success);
     //     });

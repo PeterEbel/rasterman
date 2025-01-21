@@ -46,6 +46,7 @@ public:
                    bool useMedian = false,
                    int scalingMode = 1,
                    double coverageFactor = 1.0,
+                   double gamma = 1.0,
                    bool useGrayscale = false,
                    bool useBlackCircles = false);
 
