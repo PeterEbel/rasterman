@@ -109,6 +109,7 @@ QColor Rasterizer::calculateAverageColor(const QImage& image, int x, int y, doub
 
     int r = 0, g = 0, b = 0;
     int countPixel = 0;
+
     for (int oy = y; oy < y + height && oy < image.height(); ++oy) {
         for (int ox = x; ox < x + width && ox < image.width(); ++ox) {
             if (ox < 0 || oy < 0 || ox >= image.width() || oy >= image.height()) continue;
@@ -169,6 +170,7 @@ QColor Rasterizer::calculateMedianColor(const QImage& image, int x, int y, doubl
 bool Rasterizer::writeSvgToFile(const QString& fileName, int widthPx, int heightPx, const QVector<QRectF>& circles, const QVector<QColor>& colors)  {
 
     QFile file(fileName);
+
     if (file.open(QIODevice::WriteOnly | QIODevice::Text)) {
 
         QTextStream stream(&file);

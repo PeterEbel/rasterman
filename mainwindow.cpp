@@ -24,14 +24,14 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 {
     ui->setupUi(this);
     centerWindow();
-    connect(ui->sbDpi, QOverload<int>::of(&QSpinBox::valueChanged), this, &MainWindow::updatePreview);
-    connect(ui->gammaDoubleSpinBox, QOverload<double>::of(&QDoubleSpinBox::valueChanged), this, &MainWindow::onGammaChanged); //Neue Verbindung
-    connect(ui->coverageDoubleSpinBox, QOverload<double>::of(&QDoubleSpinBox::valueChanged), this, &MainWindow::updatePreview);
-    connect(ui->maxCircleSizeDoubleSpinBox, QOverload<double>::of(&QDoubleSpinBox::valueChanged), this, &MainWindow::updatePreview);
-    connect(ui->scalingModeComboBox, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &MainWindow::updatePreview);
-    connect(ui->colorCalcComboBox, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &MainWindow::updatePreview);
-    connect(ui->grayscaleCheckBox, &QCheckBox::checkStateChanged, this, &MainWindow::updatePreview);
-    connect(ui->blackCirclesCheckBox, &QCheckBox::checkStateChanged, this, &MainWindow::updatePreview);
+    connect(ui->spbDpi, QOverload<int>::of(&QSpinBox::valueChanged), this, &MainWindow::promoteChanges);
+    connect(ui->spbGamma, QOverload<double>::of(&QDoubleSpinBox::valueChanged), this, &MainWindow::promoteChanges); //Neue Verbindung
+    connect(ui->spbCoverage, QOverload<double>::of(&QDoubleSpinBox::valueChanged), this, &MainWindow::promoteChanges);
+    connect(ui->spbCircleSize, QOverload<double>::of(&QDoubleSpinBox::valueChanged), this, &MainWindow::promoteChanges);
+    connect(ui->cobScalingMode, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &MainWindow::promoteChanges);
+    connect(ui->cobColorCalcMethod, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &MainWindow::promoteChanges);
+    connect(ui->chbGrayscale, &QCheckBox::checkStateChanged, this, &MainWindow::promoteChanges);
+    connect(ui->chbBlackCircles, &QCheckBox::checkStateChanged, this, &MainWindow::promoteChanges);
 }
 
 MainWindow::~MainWindow()
@@ -56,32 +56,40 @@ void MainWindow::centerWindow()
     this->move(x, y);
 }
 
-void MainWindow::on_selectImageButton_clicked()
+void MainWindow::on_btnSelect_clicked()
 {
     QString fileName = QFileDialog::getOpenFileName(this, "Select image", "", "Images (*.png *.jpg *.jpeg *.bmp)");
     if (!fileName.isEmpty()) {
-        ui->imagePathLineEdit->setText(fileName);
+        ui->ledImagePath->setText(fileName);
         // set output filename
         QFileInfo fileInfo(fileName);
-        ui->outputFilenameLineEdit->setText(fileInfo.baseName() + ".svg");
+        int lastPoint = fileName.lastIndexOf(".");
+        QString fileNameNoExt = fileName.left(lastPoint);
+        ui->ledOutputFilename->setText( fileNameNoExt + ".svg");
     }
 }
 
-void MainWindow::on_saveSvgButton_clicked()
+void MainWindow::on_btnSaveSvg_clicked()
 {
-    QString fileName = QFileDialog::getSaveFileName(this, "Store SVG", ui->outputFilenameLineEdit->text(), "SVG (*.svg)");
+    QString fileName = QFileDialog::getSaveFileName(this, "Store SVG", ui->ledOutputFilename->text(), "SVG (*.svg)");
     if (!fileName.isEmpty()) {
-        ui->outputFilenameLineEdit->setText(fileName);
+        ui->ledOutputFilename->setText(fileName);
         outputFilename = fileName;
     }
 }
 
-void MainWindow::on_rasterizeButton_clicked()
+void MainWindow::on_btnPreview_clicked()
+{
+    ui->txeStatus->appendPlainText("Loading image");
+    ui->svgPreview->load(ui->ledOutputFilename->text()); // load SVG into widget
+}
+
+void MainWindow::on_btnRasterize_clicked()
 {
 
    // Read and store values from GUI elements in local variables
-    QString inputImagePath = ui->imagePathLineEdit->text();
-    QString outputFilename = ui->outputFilenameLineEdit->text(); // output filename
+    QString inputImagePath = ui->ledImagePath->text();
+    QString outputFilename = ui->ledOutputFilename->text(); // output filename
     if (inputImagePath.isEmpty()) {
         QMessageBox::warning(this, "Error", "Please select image first.");
         return;
@@ -93,18 +101,18 @@ void MainWindow::on_rasterizeButton_clicked()
         return;
     }
 
-    double outputWidthMM = ui->outputWidthDoubleSpinBox->value();
-    double outputHeightMM = ui->outputHeightDoubleSpinBox->value();
-    double maxCircleSizeMM = ui->maxCircleSizeDoubleSpinBox->value();
-    int dpi = ui->sbDpi->value();
-    bool useMedian = ui->colorCalcComboBox->currentIndex() == 1;
-    int scalingMode = ui->scalingModeComboBox->currentIndex();
-    double coverageFactor = ui->coverageDoubleSpinBox->value();
-    bool useGrayscale = ui->grayscaleCheckBox->isChecked();
-    bool useBlackCircles = ui->blackCirclesCheckBox->isChecked();
-    // double gamma = ui->gammaDoubleSpinBox->value();
+    double outputWidthMM = ui->spbOutputWidth->value();
+    double outputHeightMM = ui->spbOutputHeight->value();
+    double maxCircleSizeMM = ui->spbCircleSize->value();
+    int dpi = ui->spbDpi->value();
+    bool useMedian = ui->cobColorCalcMethod->currentIndex() == 1;
+    int scalingMode = ui->cobScalingMode->currentIndex();
+    double coverageFactor = ui->spbCoverage->value();
+    bool useGrayscale = ui->chbGrayscale->isChecked();
+    bool useBlackCircles = ui->chbBlackCircles->isChecked();
+    // double gamma = ui->spbGamma->value();
 
-    ui->statusText->appendPlainText("Rasterization started...");
+    ui->txeStatus->appendPlainText("Rasterization started...");
 
     QElapsedTimer timer;
     timer.start();
@@ -112,14 +120,14 @@ void MainWindow::on_rasterizeButton_clicked()
     bool success = rasterizer.rasterize(image, outputFilename, 0, 0, outputWidthMM, outputHeightMM, maxCircleSizeMM, dpi, useMedian, scalingMode, coverageFactor, useGrayscale, useBlackCircles);
 
     if (success) {
-        ui->statusText->appendPlainText("Rasterization finished!");
+        ui->txeStatus->appendPlainText("Rasterization finished!");
         ui->svgPreview->load(outputFilename); // show SVG
     } else {
-        ui->statusText->appendPlainText("Error during rasterization!");
+        ui->txeStatus->appendPlainText("Error during rasterization!");
     }
 
     int elapsedMs = timer.elapsed();
-    ui->statusText->appendPlainText(QString("Zeit: %1 ms").arg(elapsedMs));
+    ui->txeStatus->appendPlainText(QString("Zeit: %1 ms").arg(elapsedMs));
 
     // QtConcurrent::run([this, image, outputFilename, outputWidthMM, outputHeightMM, maxCircleSizeMM, dpi, useMedian, scalingMode, coverageFactor, useGrayscale, useBlackCircles]() {
     //     bool success = rasterizer.rasterize(image, outputFilename, 0, 0, outputWidthMM, outputHeightMM, maxCircleSizeMM, dpi, useMedian, scalingMode, coverageFactor, useGrayscale, useBlackCircles);
@@ -129,29 +137,8 @@ void MainWindow::on_rasterizeButton_clicked()
     // });
 }
 
-void MainWindow::onRasterizationFinished(bool success)
+void MainWindow::promoteChanges()
 {
 
-    if (success) {
-        ui->statusText->appendPlainText("Rasterization finished!");
-        ui->svgPreview->load(ui->outputFilenameLineEdit->text()); // show SVG
-    } else {
-        ui->statusText->appendPlainText("Error during rasterization!");
-    }
-
-    if (success) {
-        ui->statusText->appendPlainText("Rasterization finished.");
-    }
 }
 
-void MainWindow::updatePreview()
-{
-    //if(ui->imagePathLineEdit->text().isEmpty()) return;
-    //on_rasterizeButton_clicked();
-}
-
-void MainWindow::onGammaChanged(double gamma)
-{
-    rasterizer.setGamma(gamma);
-    updatePreview();
-}

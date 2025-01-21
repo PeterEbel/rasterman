@@ -30,12 +30,11 @@ public:
     ~MainWindow();
 
 private slots:
-    void on_selectImageButton_clicked();
-    void on_saveSvgButton_clicked();
-    void on_rasterizeButton_clicked();
-    void onRasterizationFinished(bool success);
-    void updatePreview();
-    void onGammaChanged(double gamma);
+    void on_btnSelect_clicked();
+    void on_btnSaveSvg_clicked();
+    void on_btnRasterize_clicked();
+    void on_btnPreview_clicked();
+    void promoteChanges();
 
 private:
     Ui::MainWindow *ui;
