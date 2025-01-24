@@ -24,7 +24,7 @@ Rasterizer::~Rasterizer() {}
 
 double adjustBrightness(double brightness, double gamma) {
     if (gamma <= 0.0) {
-        qDebug() << "Error: Gamma has to be positiv. Using default value 1.0.";
+        qDebug() << "Error: Gamma has to be positive. Using default value 1.0.";
         gamma = 1.0;
     }
     return std::pow(brightness, 1.0 / gamma);

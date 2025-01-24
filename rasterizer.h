@@ -23,29 +23,30 @@
 
 class Rasterizer : public QObject
 {
-    Q_OBJECT // Macro for signals and slots
+    Q_OBJECT
+ // Not required as gamma will be passed by the GUI in the call to rasterize().
+ // Won't delete it though to show how class properties are handeled in Qt.
     Q_PROPERTY(double gamma READ gamma WRITE setGamma)
 
 public:
     Q_INVOKABLE Rasterizer(QObject *parent = nullptr);
     ~Rasterizer() override;
 
+ // Not really required. See comment above
     double gamma() const { return m_gamma; }
     void setGamma(double gamma) { m_gamma = gamma; }
-
-    Q_SIGNAL void rasterizationFinished(bool success); // add signal
 
     bool rasterize(const QImage& originalImage,
                    const QString& outputFileName = "output.svg",
                    int xStartOriginal = 0,
                    int yStartOriginal = 0,
-                   double outputWidthMM = 512.0,
+                   double outputWidthMM = 768.0,
                    double outputHeightMM = 1024.0,
                    double maxCircleSizeMM = 10.0,
                    int dpi = 100,
                    bool useMedian = false,
                    int scalingMode = 1,
-                   double coverageFactor = 1.0,
+                   double coverageFactor = 1.4,
                    double gamma = 1.0,
                    bool useGrayscale = false,
                    bool useBlackCircles = false);
@@ -56,6 +57,7 @@ private:
     bool writeSvgToFile(const QString& fileName, int widthPx, int heightPx, const QVector<QRectF>& circles, const QVector<QColor>& colors);
 
     double MM_PER_INCH = 25.4;
+ // See comment above
     double m_gamma = 1.0;
 };
 

@@ -78,11 +78,11 @@ void MainWindow::on_btnSaveSvg_clicked()
     }
 }
 
-void MainWindow::on_btnPreview_clicked()
-{
-    ui->txeStatus->appendPlainText("Loading image");
-    ui->svgPreview->load(ui->ledOutputFilename->text()); // load SVG into widget
-}
+// void MainWindow::on_btnPreview_clicked()
+// {
+//     ui->textEdit->appendPlainText("Loading image");
+//     ui->svgPreview->load(ui->ledOutputFilename->text());
+// }
 
 void MainWindow::on_btnRasterize_clicked()
 {
@@ -121,7 +121,7 @@ void MainWindow::on_btnRasterize_clicked()
 
     if (success) {
         ui->txeStatus->appendPlainText("Rasterization finished!");
-        ui->svgPreview->load(outputFilename); // show SVG
+        ui->svgPreview->load(outputFilename);
     } else {
         ui->txeStatus->appendPlainText("Error during rasterization!");
     }
@@ -129,6 +129,7 @@ void MainWindow::on_btnRasterize_clicked()
     int elapsedMs = timer.elapsed();
     ui->txeStatus->appendPlainText(QString("Zeit: %1 ms").arg(elapsedMs));
 
+    // Multi-threading will be added later
     // QtConcurrent::run([this, image, outputFilename, outputWidthMM, outputHeightMM, maxCircleSizeMM, dpi, useMedian, scalingMode, coverageFactor, gamma, useGrayscale, useBlackCircles]() {
     //     bool success = rasterizer.rasterize(image, outputFilename, 0, 0, outputWidthMM, outputHeightMM, maxCircleSizeMM, dpi, useMedian, scalingMode, coverageFactor, gamma, useGrayscale, useBlackCircles);
     //     QMetaObject::invokeMethod(this, [this, success]() {

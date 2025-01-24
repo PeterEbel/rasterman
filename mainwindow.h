@@ -33,7 +33,7 @@ private slots:
     void on_btnSelect_clicked();
     void on_btnSaveSvg_clicked();
     void on_btnRasterize_clicked();
-    void on_btnPreview_clicked();
+    // void on_btnPreview_clicked();
     void promoteChanges();
 
 private:
