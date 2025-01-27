@@ -30,16 +30,17 @@ public:
     ~MainWindow();
 
 private slots:
-    void on_btnSelect_clicked();
+    void on_btnOpen_clicked();
     void on_btnSaveSvg_clicked();
     void on_btnRasterize_clicked();
-    // void on_btnPreview_clicked();
+    void on_btnExit_clicked();
     void promoteChanges();
 
 private:
     Ui::MainWindow *ui;
     Rasterizer rasterizer;
     QString outputFilename;
+    QImage *image;
     void centerWindow();
 };
 #endif // MAINWINDOW_H

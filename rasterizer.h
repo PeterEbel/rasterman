@@ -36,7 +36,7 @@ public:
     double gamma() const { return m_gamma; }
     void setGamma(double gamma) { m_gamma = gamma; }
 
-    bool rasterize(const QImage& originalImage,
+    bool rasterize(QImage *originalImage,
                    const QString& outputFileName = "output.svg",
                    int xStartOriginal = 0,
                    int yStartOriginal = 0,
@@ -52,8 +52,8 @@ public:
                    bool useBlackCircles = false);
 
 private:
-    QColor calculateAverageColor(const QImage& image, int x, int y, double width, double height, bool useGrayscale);
-    QColor calculateMedianColor(const QImage& image, int x, int y, double width, double height, bool useGrayscale);
+    QColor calculateAverageColor(QImage *image, int x, int y, double width, double height, bool useGrayscale);
+    QColor calculateMedianColor(QImage *image, int x, int y, double width, double height, bool useGrayscale);
     bool writeSvgToFile(const QString& fileName, int widthPx, int heightPx, const QVector<QRectF>& circles, const QVector<QColor>& colors);
 
     double MM_PER_INCH = 25.4;

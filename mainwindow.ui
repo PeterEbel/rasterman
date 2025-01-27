@@ -6,12 +6,12 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
-    <height>600</height>
+    <width>1024</width>
+    <height>768</height>
    </rect>
   </property>
   <property name="sizePolicy">
-   <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
     <horstretch>0</horstretch>
     <verstretch>0</verstretch>
    </sizepolicy>
@@ -33,10 +33,10 @@
     <item>
      <layout class="QHBoxLayout" name="horizontalLayoutMain" stretch="0,1">
       <property name="sizeConstraint">
-       <enum>QLayout::SizeConstraint::SetDefaultConstraint</enum>
+       <enum>QLayout::SizeConstraint::SetMinimumSize</enum>
       </property>
       <item>
-       <layout class="QVBoxLayout" name="verticalLayoutLeft" stretch="1,2,1">
+       <layout class="QVBoxLayout" name="verticalLayoutLeft" stretch="0,0,0">
         <property name="sizeConstraint">
          <enum>QLayout::SizeConstraint::SetMinimumSize</enum>
         </property>
@@ -46,18 +46,8 @@
            <string>Einstellungen</string>
           </property>
           <layout class="QFormLayout" name="formLayout">
-           <item row="0" column="0">
-            <widget class="QLabel" name="lblInputPath">
-             <property name="text">
-              <string>Eingabepfad:</string>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="0" colspan="2">
-            <widget class="QLineEdit" name="ledImagePath"/>
-           </item>
-           <item row="2" column="0" colspan="2">
-            <widget class="QPushButton" name="btnSelect">
+           <item row="0" column="0" colspan="2">
+            <widget class="QPushButton" name="btnOpen">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
                <horstretch>0</horstretch>
@@ -69,7 +59,17 @@
              </property>
             </widget>
            </item>
-           <item row="3" column="0">
+           <item row="1" column="0">
+            <widget class="QLabel" name="lblInputPath">
+             <property name="text">
+              <string>Zu rasternde Datei:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="0" colspan="2">
+            <widget class="QLineEdit" name="ledImagePath"/>
+           </item>
+           <item row="4" column="0">
             <widget class="QLabel" name="lbCaptionInputlmageWidth">
              <property name="maximumSize">
               <size>
@@ -78,39 +78,55 @@
               </size>
              </property>
              <property name="text">
-              <string>Breite:</string>
-             </property>
-            </widget>
-           </item>
-           <item row="3" column="1">
-            <widget class="QLabel" name="lblInputImageHeight_2">
-             <property name="text">
-              <string>TextLabel</string>
-             </property>
-            </widget>
-           </item>
-           <item row="4" column="0">
-            <widget class="QLabel" name="lblCaptionInputImageHeight">
-             <property name="text">
-              <string>Höhe:</string>
+              <string>Breite (in Pixel):</string>
              </property>
             </widget>
            </item>
            <item row="4" column="1">
-            <widget class="QLabel" name="lblInputImageHeight">
+            <widget class="QLabel" name="lblInputImageWidth">
              <property name="text">
-              <string>TextLabel</string>
+              <string/>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignVCenter</set>
              </property>
             </widget>
            </item>
-           <item row="10" column="0">
+           <item row="5" column="0">
+            <widget class="QLabel" name="lblCaptionInputImageHeight">
+             <property name="text">
+              <string>Höhe (in Pixel):</string>
+             </property>
+            </widget>
+           </item>
+           <item row="5" column="1">
+            <widget class="QLabel" name="lblInputImageHeight">
+             <property name="text">
+              <string/>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignVCenter</set>
+             </property>
+            </widget>
+           </item>
+           <item row="8" column="0">
+            <widget class="QLabel" name="lblOutputPath">
+             <property name="text">
+              <string>Speichern als:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="9" column="0" colspan="2">
+            <widget class="QLineEdit" name="ledOutputFilename"/>
+           </item>
+           <item row="11" column="0">
             <widget class="QLabel" name="lblOutputWidth">
              <property name="text">
               <string>Ausgabebreite (mm):</string>
              </property>
             </widget>
            </item>
-           <item row="10" column="1">
+           <item row="11" column="1">
             <widget class="QDoubleSpinBox" name="spbOutputWidth">
              <property name="maximum">
               <double>3000.000000000000000</double>
@@ -123,14 +139,14 @@
              </property>
             </widget>
            </item>
-           <item row="11" column="0">
+           <item row="12" column="0">
             <widget class="QLabel" name="lblOutputHeight">
              <property name="text">
               <string>Ausgabehöhe (mm):</string>
              </property>
             </widget>
            </item>
-           <item row="11" column="1">
+           <item row="12" column="1">
             <widget class="QDoubleSpinBox" name="spbOutputHeight">
              <property name="maximum">
               <double>3000.000000000000000</double>
@@ -143,29 +159,32 @@
              </property>
             </widget>
            </item>
-           <item row="12" column="0">
+           <item row="13" column="0">
             <widget class="QLabel" name="lblMaxCircleSize">
              <property name="text">
               <string>Max. Kreisgröße (mm):</string>
              </property>
             </widget>
            </item>
-           <item row="12" column="1">
+           <item row="13" column="1">
             <widget class="QDoubleSpinBox" name="spbCircleSize">
              <property name="value">
               <double>4.000000000000000</double>
              </property>
             </widget>
            </item>
-           <item row="13" column="0">
+           <item row="14" column="0">
             <widget class="QLabel" name="lblScalingMode">
              <property name="text">
               <string>Skalierungsmodus:</string>
              </property>
             </widget>
            </item>
-           <item row="13" column="1">
+           <item row="14" column="1">
             <widget class="QComboBox" name="cobScalingMode">
+             <property name="currentText">
+              <string>Quadratwurzel</string>
+             </property>
              <item>
               <property name="text">
                <string>Konstant</string>
@@ -188,14 +207,14 @@
              </item>
             </widget>
            </item>
-           <item row="14" column="0">
+           <item row="15" column="0">
             <widget class="QLabel" name="lblColorCalculationMethod">
              <property name="text">
-              <string>FarbBerechnung:</string>
+              <string>Farbberechnung:</string>
              </property>
             </widget>
            </item>
-           <item row="14" column="1">
+           <item row="15" column="1">
             <widget class="QComboBox" name="cobColorCalcMethod">
              <item>
               <property name="text">
@@ -209,14 +228,14 @@
              </item>
             </widget>
            </item>
-           <item row="15" column="0">
+           <item row="16" column="0">
             <widget class="QLabel" name="lblDpi">
              <property name="text">
               <string>DPI:</string>
              </property>
             </widget>
            </item>
-           <item row="15" column="1">
+           <item row="16" column="1">
             <widget class="QSpinBox" name="spbDpi">
              <property name="minimum">
               <number>1</number>
@@ -225,19 +244,59 @@
               <number>1200</number>
              </property>
              <property name="value">
-              <number>300</number>
+              <number>100</number>
              </property>
             </widget>
            </item>
-           <item row="16" column="0">
+           <item row="17" column="0">
             <widget class="QLabel" name="lblCoverageFactor">
              <property name="text">
-              <string>Coverage Factor:</string>
+              <string>Eckenabdeckung:</string>
              </property>
             </widget>
            </item>
-           <item row="16" column="1">
+           <item row="17" column="1">
             <widget class="QDoubleSpinBox" name="spbCoverage">
+             <property name="maximum">
+              <double>2.000000000000000</double>
+             </property>
+             <property name="singleStep">
+              <double>0.100000000000000</double>
+             </property>
+             <property name="value">
+              <double>1.400000000000000</double>
+             </property>
+            </widget>
+           </item>
+           <item row="18" column="0">
+            <widget class="QCheckBox" name="chbGrayscale">
+             <property name="text">
+              <string>Graustufen</string>
+             </property>
+            </widget>
+           </item>
+           <item row="19" column="0">
+            <widget class="QCheckBox" name="chbBlackCircles">
+             <property name="text">
+              <string>Nur schwarze Kreise</string>
+             </property>
+            </widget>
+           </item>
+           <item row="20" column="0">
+            <widget class="QLabel" name="lblGamma">
+             <property name="text">
+              <string>Gamma:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="20" column="1">
+            <widget class="QDoubleSpinBox" name="spbGamma">
+             <property name="minimum">
+              <double>0.010000000000000</double>
+             </property>
+             <property name="maximum">
+              <double>1.000000000000000</double>
+             </property>
              <property name="singleStep">
               <double>0.100000000000000</double>
              </property>
@@ -246,60 +305,23 @@
              </property>
             </widget>
            </item>
-           <item row="17" column="0">
-            <widget class="QCheckBox" name="chbGrayscale">
+           <item row="7" column="0">
+            <spacer name="verticalSpacer">
+             <property name="orientation">
+              <enum>Qt::Orientation::Vertical</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>10</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item row="6" column="0">
+            <widget class="QLabel" name="label">
              <property name="text">
-              <string>Graustufen</string>
-             </property>
-            </widget>
-           </item>
-           <item row="18" column="0">
-            <widget class="QCheckBox" name="chbBlackCircles">
-             <property name="text">
-              <string>Nur schwarze Kreise</string>
-             </property>
-            </widget>
-           </item>
-           <item row="19" column="0">
-            <widget class="QLabel" name="lblGamma">
-             <property name="text">
-              <string>Gamma:</string>
-             </property>
-            </widget>
-           </item>
-           <item row="19" column="1">
-            <widget class="QDoubleSpinBox" name="spbGamma">
-             <property name="minimum">
-              <double>0.100000000000000</double>
-             </property>
-             <property name="maximum">
-              <double>5.000000000000000</double>
-             </property>
-             <property name="value">
-              <double>1.000000000000000</double>
-             </property>
-            </widget>
-           </item>
-           <item row="21" column="0">
-            <widget class="QLabel" name="lblOutputPath">
-             <property name="text">
-              <string>Ausgabepfad:</string>
-             </property>
-            </widget>
-           </item>
-           <item row="22" column="0" colspan="2">
-            <widget class="QLineEdit" name="ledOutputFilename"/>
-           </item>
-           <item row="23" column="0" colspan="2">
-            <widget class="QPushButton" name="btnSaveSvg">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="text">
-              <string>Speichern unter...</string>
+              <string>Farbtiefe:</string>
              </property>
             </widget>
            </item>
@@ -308,11 +330,14 @@
         </item>
         <item>
          <widget class="QPlainTextEdit" name="txeStatus">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
+          <property name="frameShape">
+           <enum>QFrame::Shape::StyledPanel</enum>
+          </property>
+          <property name="frameShadow">
+           <enum>QFrame::Shadow::Plain</enum>
+          </property>
+          <property name="sizeAdjustPolicy">
+           <enum>QAbstractScrollArea::SizeAdjustPolicy::AdjustToContents</enum>
           </property>
           <property name="readOnly">
            <bool>true</bool>
@@ -321,15 +346,21 @@
         </item>
         <item>
          <widget class="QPushButton" name="btnRasterize">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
           <property name="text">
-           <string>Rasterisieren</string>
+           <string>Rastern</string>
           </property>
          </widget>
         </item>
        </layout>
       </item>
       <item>
-       <layout class="QVBoxLayout" name="verticalLayoutRight" stretch="1,0">
+       <layout class="QVBoxLayout" name="verticalLayoutRight" stretch="0,0">
         <property name="spacing">
          <number>6</number>
         </property>
@@ -339,7 +370,7 @@
         <item>
          <widget class="QGroupBox" name="gboSvg">
           <property name="sizePolicy">
-           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+           <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
            </sizepolicy>
@@ -347,22 +378,18 @@
           <property name="title">
            <string>SVG Vorschau</string>
           </property>
-          <widget class="QSvgWidget" name="svgPreview" native="true">
-           <property name="geometry">
-            <rect>
-             <x>10</x>
-             <y>21</y>
-             <width>768</width>
-             <height>1024</height>
-            </rect>
-           </property>
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-          </widget>
+          <layout class="QVBoxLayout" name="verticalLayout_2">
+           <item>
+            <widget class="QSvgWidget" name="svgPreview" native="true">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+            </widget>
+           </item>
+          </layout>
          </widget>
         </item>
         <item>
@@ -392,7 +419,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>800</width>
+     <width>1024</width>
      <height>20</height>
     </rect>
    </property>

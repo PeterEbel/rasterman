@@ -1,3 +1,4 @@
+
 // Rasterman Standalone Version 1.0
 // Copyright (C) 2025 Peter Ebel
 //
@@ -20,7 +21,7 @@
 #include <QDebug>
 #include <QFileInfo>
 
-MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow)
+MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow), image(nullptr)
 {
     ui->setupUi(this);
     centerWindow();
@@ -37,6 +38,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 MainWindow::~MainWindow()
 {
     delete ui;
+    delete image;
+    image = nullptr;
 }
 
 void MainWindow::centerWindow()
@@ -56,48 +59,46 @@ void MainWindow::centerWindow()
     this->move(x, y);
 }
 
-void MainWindow::on_btnSelect_clicked()
+void MainWindow::on_btnOpen_clicked()
 {
-    QString fileName = QFileDialog::getOpenFileName(this, "Select image", "", "Images (*.png *.jpg *.jpeg *.bmp)");
+    QString fileName = QFileDialog::getOpenFileName(this, "Bild öffnen", "", "Images (*.png *.jpg *.jpeg *.bmp)");
     if (!fileName.isEmpty()) {
         ui->ledImagePath->setText(fileName);
         // set output filename
-        QFileInfo fileInfo(fileName);
         int lastPoint = fileName.lastIndexOf(".");
         QString fileNameNoExt = fileName.left(lastPoint);
         ui->ledOutputFilename->setText( fileNameNoExt + ".svg");
+
+        QString inputImagePath = ui->ledImagePath->text();
+        image = new QImage(inputImagePath);
+        if (image->isNull()) {
+            QMessageBox::critical(this, "Error", "Could not load image.");
+            return;
+        }
+        ui->lblInputImageHeight->setText(QString("%1").arg(image->height()));
+        ui->lblInputImageWidth->setText(QString("%1").arg(image->width()));
+        ui->spbOutputHeight->setValue(image->height());
+        ui->spbOutputWidth->setValue(image->width());
     }
 }
 
 void MainWindow::on_btnSaveSvg_clicked()
 {
-    QString fileName = QFileDialog::getSaveFileName(this, "Store SVG", ui->ledOutputFilename->text(), "SVG (*.svg)");
+    QString fileName = QFileDialog::getSaveFileName(this, "SVG speichern", ui->ledOutputFilename->text(), "SVG (*.svg)");
     if (!fileName.isEmpty()) {
         ui->ledOutputFilename->setText(fileName);
         outputFilename = fileName;
     }
 }
 
-// void MainWindow::on_btnPreview_clicked()
-// {
-//     ui->textEdit->appendPlainText("Loading image");
-//     ui->svgPreview->load(ui->ledOutputFilename->text());
-// }
-
 void MainWindow::on_btnRasterize_clicked()
 {
 
-   // Read and store values from GUI elements in local variables
+    // Read and store values from GUI elements in local variables
     QString inputImagePath = ui->ledImagePath->text();
     QString outputFilename = ui->ledOutputFilename->text(); // output filename
     if (inputImagePath.isEmpty()) {
-        QMessageBox::warning(this, "Error", "Please select image first.");
-        return;
-    }
-
-    QImage image(inputImagePath);
-    if (image.isNull()) {
-        QMessageBox::critical(this, "Error", "Could not load image.");
+        QMessageBox::warning(this, "Fehler", "Bitte zuerst ein Bild öffnen.");
         return;
     }
 
@@ -112,7 +113,7 @@ void MainWindow::on_btnRasterize_clicked()
     bool useGrayscale = ui->chbGrayscale->isChecked();
     bool useBlackCircles = ui->chbBlackCircles->isChecked();
 
-    ui->txeStatus->appendPlainText("Rasterization started...");
+    ui->txeStatus->appendPlainText("Rasterprozess gestartet.");
 
     QElapsedTimer timer;
     timer.start();
@@ -120,10 +121,10 @@ void MainWindow::on_btnRasterize_clicked()
     bool success = rasterizer.rasterize(image, outputFilename, 0, 0, outputWidthMM, outputHeightMM, maxCircleSizeMM, dpi, useMedian, scalingMode, coverageFactor, gamma, useGrayscale, useBlackCircles);
 
     if (success) {
-        ui->txeStatus->appendPlainText("Rasterization finished!");
+        ui->txeStatus->appendPlainText("Rasterprozess beendet.");
         ui->svgPreview->load(outputFilename);
     } else {
-        ui->txeStatus->appendPlainText("Error during rasterization!");
+        ui->txeStatus->appendPlainText("Fehler während der Rasterung!");
     }
 
     int elapsedMs = timer.elapsed();
@@ -141,5 +142,10 @@ void MainWindow::on_btnRasterize_clicked()
 void MainWindow::promoteChanges()
 {
 
+}
+
+void MainWindow::on_btnExit_clicked()
+{
+    QApplication::quit();
 }
 

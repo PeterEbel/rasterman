@@ -30,7 +30,7 @@ double adjustBrightness(double brightness, double gamma) {
     return std::pow(brightness, 1.0 / gamma);
 }
 
-bool Rasterizer::rasterize(const QImage& originalImage,
+bool Rasterizer::rasterize(QImage *originalImage,
                            const QString& outputFileName,
                            int xStartOriginal,
                            int yStartOriginal,
@@ -48,8 +48,8 @@ bool Rasterizer::rasterize(const QImage& originalImage,
     int outputWidthPx = static_cast<int>(outputWidthMM / MM_PER_INCH * dpi);
     int outputHeightPx = static_cast<int>(outputHeightMM / MM_PER_INCH * dpi);
     double squareSizePx = maxCircleSizeMM / MM_PER_INCH * dpi;
-    double widthRatio = static_cast<double>(originalImage.width()) / outputWidthPx;
-    double heightRatio = static_cast<double>(originalImage.height()) / outputHeightPx;
+    double widthRatio = static_cast<double>(originalImage->width()) / outputWidthPx;
+    double heightRatio = static_cast<double>(originalImage->height()) / outputHeightPx;
     double maxCircleSizePx = maxCircleSizeMM / MM_PER_INCH * dpi;
 
     QVector<QRectF> circles;
@@ -106,15 +106,15 @@ bool Rasterizer::rasterize(const QImage& originalImage,
     return writeSvgToFile(outputFileName, outputWidthPx, outputHeightPx, circles, colors);
 }
 
-QColor Rasterizer::calculateAverageColor(const QImage& image, int x, int y, double width, double height, bool useGrayscale) {
+QColor Rasterizer::calculateAverageColor(QImage *image, int x, int y, double width, double height, bool useGrayscale) {
 
     int r = 0, g = 0, b = 0;
     int countPixel = 0;
 
-    for (int oy = y; oy < y + height && oy < image.height(); ++oy) {
-        for (int ox = x; ox < x + width && ox < image.width(); ++ox) {
-            if (ox < 0 || oy < 0 || ox >= image.width() || oy >= image.height()) continue;
-            QColor pixelColor = image.pixelColor(ox, oy);
+    for (int oy = y; oy < y + height && oy < image->height(); ++oy) {
+        for (int ox = x; ox < x + width && ox < image->width(); ++ox) {
+            if (ox < 0 || oy < 0 || ox >= image->width() || oy >= image->height()) continue;
+            QColor pixelColor = image->pixelColor(ox, oy);
             if (useGrayscale) {
                 int gray = (int)(0.299 * pixelColor.red() + 0.587 * pixelColor.green() + 0.114 * pixelColor.blue());
                 QColor grayColor(gray, gray, gray);
@@ -132,16 +132,16 @@ QColor Rasterizer::calculateAverageColor(const QImage& image, int x, int y, doub
     return Qt::white; // Default color in case no pixel found
 }
 
-QColor Rasterizer::calculateMedianColor(const QImage& image, int x, int y, double width, double height, bool useGrayscale) {
+QColor Rasterizer::calculateMedianColor(QImage *image, int x, int y, double width, double height, bool useGrayscale) {
 
     QVector<int> redValues;
     QVector<int> greenValues;
     QVector<int> blueValues;
 
-    for (int oy = y; oy < y + height && oy < image.height(); ++oy) {
-        for (int ox = x; ox < x + width && ox < image.width(); ++ox) {
-            if (ox < 0 || oy < 0 || ox >= image.width() || oy >= image.height()) continue;
-            QColor pixelColor = image.pixelColor(ox, oy);
+    for (int oy = y; oy < y + height && oy < image->height(); ++oy) {
+        for (int ox = x; ox < x + width && ox < image->width(); ++ox) {
+            if (ox < 0 || oy < 0 || ox >= image->width() || oy >= image->height()) continue;
+            QColor pixelColor = image->pixelColor(ox, oy);
             if (useGrayscale) {
                 int gray = (int)(0.299 * pixelColor.red() + 0.587 * pixelColor.green() + 0.114 * pixelColor.blue());
                 QColor grayColor(gray, gray, gray);
